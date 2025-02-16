@@ -1,0 +1,918 @@
+[happy-table] input,
+[happy-table] select,
+[happy-table] textarea {
+    font: inherit;
+}
+
+
+.material-icon{
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    vertical-align: middle;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: geometricPrecision;
+	-moz-osx-font-smoothing: grayscale;
+	font-feature-settings: "liga";
+}
+.ui.labeled.icon.button .material-icon{
+    width: 36px;
+    background-color: rgba(0,0,0,.05);
+    box-shadow: -1px 0 0 0 transparent inset;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    line-height: 36px;
+    opacity: .9;
+}
+
+input::selection,
+textarea::selection{
+    background-color: #CCE2FF;
+    color: rgba(0,0,0,.87);
+}
+
+[happy-table]:last-child {
+	margin-bottom: 0;
+}
+[happy-table]:first-child {
+	margin-top: 0;
+}
+[happy-table]{
+	margin: 1em 0;
+}
+[happy-table].top.attached{
+	margin-bottom: 0;
+}
+
+body ::-webkit-scrollbar{
+	height: 10px; /* for horizontal scrollbar */
+}
+
+/*
+.ui[class*="very basic"].table:not(.sortable):not(.striped) td:last-child, .ui[class*="very basic"].table:not(.sortable):not(.striped) th:last-child {
+	padding-right: 0.7em;
+}
+.ui[class*="very basic"].table:not(.sortable):not(.striped) td:first-child, .ui[class*="very basic"].table:not(.sortable):not(.striped) th:first-child {
+	padding-left: 0.7em;
+}*/
+
+.happy-table .no-wrap{
+	white-space: nowrap;
+}
+
+
+[happy-table] .ui[class*="bottom attached"].table{
+	margin-bottom: 0;
+}
+
+
+
+
+
+/*========================================================*/
+/* Table Top Attachment Styles */
+.ui.top.attached.menu.happy-style{
+	background-color: #f3f4f5;	
+	cursor: default;
+}
+[happy-table]:first-child .ui.top.attached.menu.happy-style{
+	margin-top: 0;
+}
+.ui.top.attached.menu.happy-style [role="button"].item:focus{
+	background-color: rgba(0,0,0,0.03);
+	outline: none;
+}
+.ui.top.attached.menu.happy-style [role="button"].item:active{
+	background-color: rgba(0,0,0,0.07);
+}
+
+.ui.top.attached.menu.happy-style .icon.item{
+	padding-left:calc(24px + 1.14285714em);
+}
+.ui.top.attached.menu.happy-style .icon-only.item{
+	padding-left: 24px;
+}
+.ui.top.attached.menu.happy-style .icon.item .material-icon{
+	position: absolute;
+	transform: translateX(calc((100% + 4px)*-1));
+	opacity: .55;
+	transition: color .1s ease;
+}
+.ui.top.attached.menu.happy-style .icon-only.item .material-icon{
+	position: absolute;
+	transform: translateX(calc((50% + 4px)*-1));
+	opacity: .55;
+	transition: color .1s ease;	
+}
+.ui.top.attached.menu.happy-style .icon.item[role="button"]:hover .material-icon,
+.ui.top.attached.menu.happy-style .icon.item[role="button"]:focus .material-icon{
+	opacity: .9;
+}
+
+[happy-table].ui.top.attached .happy-table{
+	border-radius: 0;
+}
+
+.ui.top.attached.menu.selected-menu.happy-style{
+	display: none;
+}
+
+
+
+/*========================================================*/
+/* Table Row Styles */
+.happy-table tr.editing:not(.firstEdit){
+	background-color: rgba(0,0,50,.02);
+}
+.happy-table tr.disabled{
+	pointer-events: none;
+}
+.happy-table tr.ui-sortable-helper{
+	background-color: #fff;
+	box-shadow: 0 0 25px rgba(0,0,0,0.1);
+}
+.happy-table.basic tr.ui-sortable-helper{
+	border-bottom: none !important;
+}
+
+/*========================================================*/
+/* Th,td */
+.happy-table.ui.table thead th{
+	user-select: none;
+	cursor: pointer;
+	position: relative;
+}
+.happy-table.ui.table thead th.unsortable,
+.happy-table.ui.table thead th.disabled,
+.happy-table.ui.happy-definition.table thead th{
+	cursor: default;
+}
+.happy-table th::before,
+.happy-table th::after{
+	content: "";
+	display: block;
+	width: 0;
+	height: 0;
+	border: 5px solid transparent;
+	position: absolute;
+	top: 50%;
+	right: .7em;
+}
+.happy-table th::before{
+	/*border-bottom-color: rgba(34,36,38,.1);*/
+	transform:translateY(calc((50% + 6px)*-1));
+}
+.happy-table th.sorted-up::before{
+	border-bottom-color: rgba(0,0,0,.87);
+}
+.happy-table th::after{
+	/*border-top-color: rgba(34,36,38,.1);*/
+	transform:translateY(calc((50% - 6px)*-1));
+}
+.happy-table th.sorted-down::after{
+	border-top-color: rgba(0,0,0,.87);
+}
+.happy-table tbody td a{
+	color: inherit;
+	text-decoration: underline;
+}
+.happy-table tr th.shrink,
+.happy-table tr td.shrink{
+	width: 1px; /* Hack for min width */
+}
+.ui.compact.happy-table tr th.sorted-down,
+.ui.compact.happy-table tr th.sorted-up{
+	padding-right: calc(0.7em + 10px + 0.7em);
+}
+.happy-table.basic tr.ui-sortable-helper td{
+	border-bottom: none !important;
+}
+
+
+/*--------------------------------------------------------*/
+/*Definition*/
+.happy-table.ui.happy-definition.table tbody td:first-child{
+	user-select: none;
+	cursor: default;
+}
+.ui.happy-definition.table thead tr th{
+	height: 40px;
+	line-height: 40px;
+	padding: 0 .7em;
+}
+.ui.happy-definition.table tbody tr th:first-child {
+	/*background: rgba(0, 0, 0, 0.03);*/
+	font-weight: bold;
+	color: rgba(0, 0, 0, 0.95);
+	font-size: 1em;
+}
+.ui.inverted.happy-definition.table tbody tr th:first-child {
+	background: rgba(255, 255, 255, 0.02);
+	color: #ffffff;
+}
+.ui.table.happy-definition tbody tr:first-child th{
+	border-top: none;
+}
+.ui.table.happy-definition tbody tr th{
+	border-top: 1px solid rgba(34,36,38,.1);
+}
+
+/*--------------------------------------------------------*/
+/* Scrolling */
+.happy-table.happy-scrolling-table{
+	display: block;
+	white-space: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+.happy-table.happy-scrolling-table > thead > tr > th:not(:last-child){
+	background-color: rgba(0,0,50,.02) !important;
+}
+.happy-table.happy-scrolling-table::-webkit-scrollbar-track {
+	background-color: #e5e5e5;
+}
+.happy-table.happy-scrolling-table{
+	background-image:
+		linear-gradient(90deg, #fff 0%, transparent 3%),
+		linear-gradient(90deg, #e8e8e8 0%, transparent 2%),
+		linear-gradient(-90deg, #fff 0%, transparent 3%),
+		linear-gradient(-90deg, #e8e8e8 0%, transparent 2%) !important;
+	/*background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+	background-size: 0 0, 0 0, 0 0, 0 0;*/
+	background-position: 0 0, 0 0, calc((50px + 2.8em)*-1) 0, calc((50px + 2.8em)*-1) 0 !important;
+	background-attachment: local, scroll, local, scroll !important;
+}
+.happy-table.happy-scrolling-table.reordering{
+	background-position: 0 0, 0 0, 0 0, 0 0 !important;
+}
+.happy-table.happy-scrolling-table > thead > tr > th:last-child,
+.happy-table.happy-scrolling-table > tbody > tr > td.action{
+	display: block;
+	position: fixed;
+	z-index: 10;
+}
+.happy-table.happy-scrolling-table > tbody > tr > td:nth-last-child(4) input{
+	margin-right: 1px;
+	/*so that blue border is visible*/
+}
+.happy-table.happy-scrolling-table .scrolling-placeholder{
+	padding: 0 calc(24px + 1.4em) !important;
+}
+.happy-table.happy-scrolling-table.reordering .scrolling-placeholder{
+	display: none;
+}
+.happy-table.happy-scrolling-table > tbody > tr > td.action{
+	background-color: #fff;
+}
+.happy-table.happy-scrolling-table > tbody > tr.editing > td.action{
+	background-color: #fafafb;
+}
+.happy-table.happy-scrolling-table > tbody > tr > td{
+	width: 999px;
+}
+
+/*
+.happy-table.happy-scrolling-table thead tr th:last-child,
+.happy-table.happy-scrolling-table tbody tr td:last-child{
+	right: 0;
+}
+.happy-table.happy-scrolling-table tbody tr td.action:nth-last-child(2){
+	right: calc(24px + 1.4em);
+}*/
+.happy-table.happy-scrolling-table thead tr th:last-child{
+	width: calc(50px + 2.8em);
+}
+.happy-table.happy-scrolling-table > tbody > tr > .action.icon{
+	width: auto;
+}
+.happy-table.happy-scrolling-table tr{
+	height: calc(25px + 1em);
+}
+
+
+/*--------------------------------------------------------*/
+/* Embedded */
+.happy-table .editor [happy-table]{
+	width: 100%;
+	margin: 1.5rem;
+}
+.happy-table .editor [happy-table]:focus{
+	outline: none;
+}
+.happy-table.happy-embedded{
+	/*background-color: transparent;*/
+}
+.happy-table.happy-has-embedded > tbody > tr.editing > td{
+	vertical-align: top;
+}
+.happy-table.happy-scrolling-table [happy-table]{
+	position: static;
+}
+
+/*========================================================*/
+/* Action */
+.happy-table tr > .icon{
+	width: 1px; /* Hack for min width */
+}
+.happy-table tr > .icon > .material-icon{
+	border: none;
+	background: none;
+	padding: 0;
+	opacity: .55;
+	transition: opacity ease .1s;
+}
+.happy-table tr > .icon > button.material-icon{
+	cursor: pointer;
+}
+.happy-table tr > .icon > .material-icon:hover,
+.happy-table tr > .icon > .material-icon:focus{
+	opacity: 1;
+	outline: none;
+}
+.happy-table tr > .icon > .material-icon.disabled{
+	opacity: .3;
+	cursor: not-allowed;
+}
+
+.happy-table tr.editing > td:not(.icon){
+	padding: 0;
+}
+
+/* Reorder */
+.happy-table td.reorder > .material-icon{
+	cursor: move;
+}
+
+.happy-table.very.basic tr.editing:not(.firstEdit) > td:first-child,
+.happy-table.very.basic tr.editing:not(.firstEdit) > th:first-child,
+.happy-table.very.basic tr.ui-sortable-helper > td:first-child,
+.happy-table.very.basic tr.ui-sortable-helper > th:first-child{
+	padding-left: .7em !important;
+}
+.happy-table.very.basic tr.editing:not(.firstEdit) > td:last-child,
+.happy-table.very.basic tr.editing:not(.firstEdit) > th:last-child,
+.happy-table.very.basic tr.ui-sortable-helper > td:last-child,
+.happy-table.very.basic tr.ui-sortable-helper > th:last-child{
+	padding-right: .7em !important;
+}
+
+/*--------------------------------------------------------*/
+/* Show action on hover*/
+.ui.table.happy-table.happy-definition tr > .action,
+.ui.table.happy-table.happy-multiple-input:not(.happy-embedded) tr > .action{
+	border-left-color: transparent;
+	transition: border-left-color ease .1s;
+}
+.ui.table.happy-table.happy-definition tr.editing > .action,
+.ui.table.happy-table.happy-multiple-input:not(.happy-embedded) tr:hover > .action,
+.ui.table.happy-table.happy-multiple-input:not(.happy-embedded) tr.editing > .action{
+	border-left-color: rgba(34,36,38,0.1);
+}
+
+.happy-table.happy-definition tr:not(.editing) > .action > .material-icon,
+.happy-table.happy-multiple-input:not(.happy-embedded) tr:not(.editing) > .action > .material-icon{
+	opacity: 0;
+}
+.happy-table.happy-definition tr:hover > .action > .material-icon,
+.happy-table.happy-multiple-input:not(.happy-embedded) tr:hover > .action > .material-icon{
+	opacity: 0.55;
+}
+
+.happy-table.happy-definition tr:hover > .action > .material-icon.disabled,
+.happy-table.happy-multiple-input:not(.happy-embedded) tr:hover > .action > .material-icon.disabled{
+	opacity: .3;
+}
+.happy-table.happy-definition tr > .action > .material-icon:hover,
+.happy-table.happy-definition tr > .action > .material-icon:focus,
+.happy-table.happy-multiple-input:not(.happy-embedded) tr > .action > .material-icon:hover,
+.happy-table.happy-multiple-input:not(.happy-embedded) tr > .action > .material-icon:focus{
+	opacity: 1;
+}
+
+/*========================================================*/
+/* Editor (input,dropdown,etc container) */
+.happy-table td .editor{
+	display: flex;
+}
+
+.happy-table td .editor .readonly-value{
+	padding: .5em .7em;
+	border: 2px solid transparent;
+}
+
+/*========================================================*/
+/* Prefix & Suffic */
+.happy-table td .editor .prefix,
+.happy-table td .editor .suffix{
+	padding: .5em .7em;
+	align-self: center;
+}
+.happy-table td .editor .prefix{
+	border-right: 1px solid rgba(34,36,38,.1);
+}
+.happy-table td .editor .suffix{
+	border-left: 1px solid rgba(34,36,38,.1);
+}
+
+/*========================================================*/
+/* Input */
+.happy-table td .editor input,
+.happy-table td .editor select{
+	width: 100%;
+    padding: .5em .7em;
+    color: rgba(0,0,0,.87);
+    height: 40px;
+    line-height: 1.1;
+    border: none;
+    flex-grow: 1;
+    display: block;
+    background-color: transparent;
+	border: 2px solid transparent;
+	transition:
+		border-color ease .3s,
+		background-color-color ease .3s,
+		color ease .3s;
+}
+
+/* Number */
+.happy-table td .editor input[type="number"]{
+	min-width: 6em;
+}
+.happy-table td .editor input::-webkit-inner-spin-button{
+	display: none;
+	margin-left: .7em;
+}
+.happy-table td .editor input:hover::-webkit-inner-spin-button,
+.happy-table td .editor input:focus::-webkit-inner-spin-button{
+	display: inline-block;
+}
+
+input.happy-mobile-input::-webkit-outer-spin-button,
+input.happy-mobile-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* readonly */
+.happy-table td .editor input:focus,
+.happy-table td .editor select:focus{
+	border-color: #85b7d9;
+	outline: none;
+	z-index: 2;
+}
+.happy-table td .editor input[readonly]:focus,
+.happy-table td .editor select[readonly]:focus{
+	border-color: transparent;
+}
+.happy-table td .editor input[readonly]::-webkit-inner-spin-button{
+	display: none !important;
+}
+
+/* checkbox */
+.happy-table td .editor input[type="checkbox"]{
+	opacity: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.happy-table td .editor input[type="checkbox"]+.checkbox{
+	border: 2px solid rgba(0, 0, 0, 0.55);
+	border-radius: 2px;
+	width: 20px;
+	height: 20px;
+	flex-grow: 0;
+	padding: 0;
+	pointer-events: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: border-color ease .1s, background-color ease .1s;
+	margin-left: -16px;
+	margin-right: 10px;
+}
+.happy-table td .editor input[type="checkbox"]:hover+.checkbox{
+	border-color: rgba(0,0,0,1);
+}
+.happy-table td .editor input[type="checkbox"]+.checkbox::after{
+	content: "check";
+	font-family: "Material Icons";
+    font-size: 18px;
+    color: #000;
+    line-height: 1;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    opacity: 0;
+    transition: opacity ease .1s, color ease .1s;
+}
+.happy-table td .editor input[type="checkbox"]:hover+.checkbox::after{
+	opacity: 1;
+}
+
+
+.happy-table td .editor input[type="checkbox"]:checked+.checkbox{
+	background-color: rgba(0,0,0,0.55);
+	border-color: transparent;
+}
+.happy-table td .editor input[type="checkbox"]:checked:hover+.checkbox{
+	background-color: rgba(0,0,0,.8);
+}
+.happy-table td .editor input[type="checkbox"]:checked+.checkbox::after{
+	color: #fff;
+	opacity: 1;
+}
+
+
+.happy-table td .editor input.error,
+.happy-table td .editor select.error{
+    background-color: #fff6f6;
+    border-color: #e0b4b4;
+    color: #9f3a38;
+}
+.happy-table td .editor input::-webkit-input-placeholder{
+	color: rgba(191,191,191,0.87);
+}
+.happy-table.happy-definition td .editor input{
+	min-width: 12em;
+}
+
+/*--------------------------------------------------------*/
+/* Definition */
+.happy-table.happy-definition tr.editing td .editor input{
+	height: 38px;
+}
+
+
+/*========================================================*/
+/* Select (dropdown) */
+.happy-table td .editor .ui.dropdown{
+	background-color: transparent;
+	border-radius: 0;
+	border-width: 2px;
+	border-color: transparent;
+	width: 100%;
+	white-space: nowrap;
+}
+.happy-table.happy-definition td .editor .ui.dropdown{
+	padding-left: 0.7em; /*TODO: find better soln*/
+}
+.happy-table td .editor .ui.dropdown .menu{
+	border-width: 2px;
+    margin: 0 -2px;
+    width: calc(100% + 4px);
+}
+.happy-table td .editor .ui.dropdown:hover{
+	border-color: transparent;
+}
+.happy-table td .editor .ui.dropdown.active,
+.happy-table td .editor .ui.dropdown:focus{
+	border-color: #85b7d9;
+}
+
+.happy-table td .editor .ui.dropdown.error{
+	background-color: #fff6f6;
+    border-color: #e0b4b4;
+    color: #9f3a38;
+}
+.happy-table td .editor .ui.dropdown.error .menu{
+	border-color: #e0b4b4;
+}
+.happy-table td .editor .ui.dropdown.error .item{
+	background-color: #fff6f6;
+	color: #9f3a38;
+}
+.happy-table td .editor .ui.dropdown.error .item:hover,
+.happy-table td .editor .ui.dropdown.error .item.selected{
+	background-color: #fbe7e7;
+}
+
+.happy-table td .editor .ui.dropdown input.search{
+	margin-top: -2px;
+	margin-left: -2px;
+}
+
+.happy-table.happy-scrolling-table .ui.dropdown{
+	position: static !important;
+	transform: none !important;
+	z-index: auto !important;
+}
+
+.happy-form-modal .prefix + .ui.dropdown{
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-left-color: transparent;
+}
+.happy-form-modal .prefix + .ui.dropdown:hover{
+    border-color: rgba(34,36,38,.35);
+}
+.happy-form-modal .prefix + .ui.active.dropdown,
+.happy-form-modal .prefix + .ui.active.dropdown:hover{
+	border-color: #96c8da;
+}
+
+
+/*========================================================*/
+/* Datepicker */
+
+.ui-datepicker{
+	user-select: none;
+	cursor: default;
+	display: none;
+	margin-left: 1px;
+}
+
+/* Resets */
+.ui-datepicker a,
+.ui-datepicker a:hover{
+	color: inherit;
+}
+.ui.celled.table tr td{
+	/*rgb(232,232,233) = rgba(34,36,38,0.1) on white*/
+	border-top: 1px solid rgb(232, 232, 233);
+	border-left: 1px solid rgb(232, 232, 233);
+}
+.ui.celled.table tr:first-child > td{
+	border-top: none;
+}
+.ui.celled.table tr td:first-child{
+	border-left: none;
+}
+
+/* Header */
+.ui-datepicker-header{
+	background-color: #f9fafb;
+	border: 1px solid #d4d4d5;
+	border-bottom: none;
+	width: calc(100% + 2px);
+	margin: 0 -1px;
+	padding: .5em 14.28571429%;
+	text-align: center;
+}
+.ui-datepicker-title{
+	font-weight: bold;
+}
+.ui-datepicker-next,
+.ui-datepicker-prev{
+	width: 14.28571429%;
+	text-align: center;
+	position: absolute;
+	cursor: pointer;
+	opacity: .55;
+	transition: opacity .1s ease;
+}
+.ui-datepicker-next:hover,
+.ui-datepicker-prev:hover{
+	opacity: 1;
+}
+.ui-datepicker-next{
+	right: 0;
+}
+.ui-datepicker-prev{
+	left: 0;
+}
+
+/* Calender Table */
+.ui-datepicker-calendar.ui.table{
+	border-top: none;
+}
+.ui-datepicker-calendar.ui.celled.table th{
+	padding: .5em;
+	border-left: none;
+	cursor: default;
+}
+.ui-datepicker-calendar.ui.table tr td{
+	padding: 0;
+}
+.ui-datepicker-calendar.ui.table td .ui-state-default{
+	display: block;
+	padding: .5em;
+	background-color: transparent;
+	transition: opacity .1s ease;
+}
+.ui-datepicker-calendar.ui.table td.ui-state-disabled span{
+	opacity: .3;
+	cursor: not-allowed;
+}
+.ui-datepicker-calendar.ui.table td a:hover{
+	background-color: rgba(34,36,38,0.05);
+}
+.ui-datepicker-calendar.ui.table td.ui-datepicker-current-day a{
+	background-color: rgba(34,36,38,0.2);	
+}
+.ui-datepicker-calendar.ui.table td.ui-datepicker-today a{
+	font-weight: bold;
+	background-color: rgba(34,36,38,0.05);
+}
+
+
+
+/*========================================================*/
+/* Popup */
+.happy-table tr.editing td .editor.error .popup,
+.happy-form-modal .editor.error .popup{
+	background-color: #fff;
+    color: #db2828;
+    border-color: #db2828;
+    padding: .5833em .833em;
+    pointer-events: none;
+    cursor: default;
+}
+.happy-table td.action .ui.popup{
+	margin-right: -8px;
+}
+
+.happy-table tr.editing td .editor.error .ui.popup::before,
+.happy-form-modal .editor.error .ui.popup::before{
+	box-shadow: 1px 1px 0px 0px #db2828;
+}
+.happy-table tr.editing td .editor.error .ui.bottom.popup::before,
+.happy-form-modal .editor.error .ui.bottom.popup::before{
+	box-shadow: -1px -1px 0px 0px #db2828;
+}
+.happy-table tr.editing td .editor.error .ui.left.center.popup::before,
+.happy-form-modal .editor.error .ui.left.center.popup::before{
+	box-shadow: 1px -1px 0px 0px #db2828;
+}
+.happy-table tr.editing td .editor.error .ui.right.center.popup::before,
+.happy-form-modal .editor.error .ui.right.center.popup::before{
+	box-shadow: -1px 1px 0px 0px #db2828;
+}
+
+/*========================================================*/
+/* Form modal */
+.happy-form-modal{
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 999;
+	background-color: #fff;
+	display: none;
+	flex-direction: column;
+
+	pointer-events: none;
+	opacity: 0;
+	transform: translateY(10%);
+	transition: all ease .2s;
+}
+.happy-form-modal.opened{
+	pointer-events: auto;
+	opacity: 1;
+	transform: translateY(0%);
+}
+
+.happy-form-modal .modal-bar{
+	height: 60px;
+	padding: 0 1rem;
+	height: 60px;
+	min-height: 60px; /* jugaad */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	background-color: #fff;
+	position: relative;
+	z-index: 1;
+}
+.happy-form-modal .modal-bar .header{
+	
+}
+
+.happy-form-modal .modal-bar .actions{
+	display: flex;
+}
+
+.happy-form-modal .modal-bar .actions .icon{
+	display: block;
+	background-color: transparent;
+	border: none;
+	margin-top: 2px;
+	cursor: pointer;
+	position: relative;
+}
+.happy-form-modal .modal-bar .actions .icon i{
+	opacity: 0.55;
+}
+
+.happy-form-modal .modal-bar .actions .done{
+	margin-left: 1rem;
+}
+
+.happy-form-modal .modal-bar .actions .done::before{
+	content: "";
+	position: absolute;
+	left: -0.5rem;
+	top: -0.25rem;
+	bottom: -0.25rem;
+	width: 1px;
+	background-color: rgba(34,36,38,.15);
+}
+
+.happy-form-modal > .content{
+	overflow-y: auto;
+	padding: 1.5rem;
+	flex-grow: 1;
+}
+.happy-form-modal .field > .editor > input,
+.happy-form-modal .field > .editor > happy-select{
+	background-color: transparent;
+}
+
+.happy-form-modal [happy-table]{
+	min-width: initial !important;
+}
+
+
+.mobile-only{
+	display: none;
+}
+
+
+@media (max-width: 600px){
+
+	.happy-form-modal{
+		display: flex;
+	}
+
+
+	.ui.top.attached.menu.selected-menu.happy-style{
+		position: absolute;
+		top: auto;
+		bottom: auto;
+		z-index: 1;
+		opacity: 0;
+		pointer-events: none;
+		display: flex;
+		transition: all ease .2s;
+	}
+	.ui.top.attached.menu.selected-menu.happy-style.shown{
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+
+	.happy-table tr{
+		cursor: pointer;
+	}
+	.happy-table tr.selected{
+		background-color: rgb(232, 232, 233);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	.pc-only{
+		display: none;
+	}
+	.mobile-only{
+		display: block;
+	}
+	span.mobile-only{
+		display: inline;
+	}
+
+
+	.ui.menu.happy-style .mobile-icon-only.item{
+		padding-left: 24px !important;
+	}
+	.ui.menu.happy-style .mobile-icon-only.item span{
+		display: none;
+	}
+	
+	.ui.menu.happy-style  .mobile-icon-only.item .material-icon{
+		transform: translateX(calc((50% + 4px)*-1)) !important;
+	}
+
+	.happy-table .action,
+	.happy-table .scrolling-placeholder,
+	.happy-table th:last-child{
+		display: none !important;
+	}
+
+	.happy-table.happy-scrolling-table{
+		background: none !important;
+	}
+
+
+}
+
+
+

@@ -1,0 +1,108 @@
+<table class="ui happy-definition table happy-table"  ng-class="settings.tableStyles">
+	<thead ng-if="settings.tableName">
+		<tr>
+			<th colspan="{{ isAnyRowEditing ? '4' : '3'}}">
+				{{settings.tableName}}
+			</th><!--
+			<th class="action icon" ng-if="isAnyRowFirstEdit">
+				<button
+					ng-click="commitEditingAll()"
+					ng-class="{'disabled': !areAllRowsValid}"
+					class="material-icon"
+					tabindex="0">
+						done
+				</button>
+			</th>-->
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="field in schema | filter:{hidden:false}" ng-init="row = getDefinitionRow(field)" ng-class="{'editing':row.isEditing,'disabled':isAnyRowEditing && !row.isEditing && !isAnyRowFirstEdit,'firstEdit':row.isFormEdit}">
+			<th ng-class="{'shrink':field.shrink,'no-wrap': !field.wrapField}">{{field.label}}</th>
+			<td>
+				<div class="default-value" ng-if="!row.isEditing">
+					{{field.prefix}}{{row[field.name] | happyFieldViewValue : field}}{{field.suffix}}
+				</div>
+				<div class="editor" ng-if="row.isEditing" ng-class="{'error':row.hasError[field.name]}">
+					<div class="prefix" ng-if="!!field.prefix">{{field.prefix}}</div>
+					<div class="readonly-value" ng-if="field.readonly">{{row.editingValues[field.name] | happyFieldViewValue : field}}</div>
+					<input
+						ng-if="field.element == 'input' && field.type !== 'date' && !field.readonly"
+						ng-model="row.editingValues[field.name]"
+						type="{{field.inputType}}"
+						placeholder="{{field.emptyViewValue}}"
+						ng-readonly="field.readonly"
+						min="{{field.min}}"
+						max="{{field.max}}"
+						is-focused="row.isFocused[field.name]"
+						select-all="row.isEditing"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && row.isDirty[field.name] && (field.showErrorAfterTouched ? row.isTouched[field.name] : true) }"
+						tabindex="{{row.hasPopup || field.readonly ? -1 : 0}}"
+						happy-error-msg="row.isDirty[field.name] && (field.showErrorAfterTouched ? row.isTouched[field.name] : true) ? row.errorMsg[field.name] : ''"
+						on-dirty="row.isDirty[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(row,$event)"
+						ng-style="field.styles">
+						<!--ng-style="{'width': row.editingValues[field.name].toString().length + 'ch'}"-->
+
+
+					<!-- date -->
+					<input
+						ng-if="field.element == 'input' && field.type == 'date' && !field.readonly"
+						ui-date="field.datepickerOptions"
+						ng-model="row.editingValues[field.name]"
+						type="text"
+						is-focused="row.isFocused[field.name]"
+						select-all="row.isEditing"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && (row.isDirty[field.name]) }"
+						tabindex="{{row.hasPopup ? -1 : 0}}"
+						happy-error-msg="row.isDirty[field.name] ? row.errorMsg[field.name] : ''"
+						on-dirty="row.isDirty[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(row,$event)"
+						ng-style="field.styles">
+			
+					<!-- select -->
+					<div
+						happy-select
+						ng-if="field.element == 'select' && !field.readonly"
+						ng-model="row.editingValues[field.name]"
+						options="field.options"
+						search-filter="field.filterBySearch"
+						is-focused="row.isFocused[field.name]"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && (row.isDirty[field.name]) }"
+						tabindex="{{row.hasPopup ? -1 : 0}}"
+						on-dirty="row.isDirty[field.name] = true"
+						happy-error-msg="row.isDirty[field.name] ? row.errorMsg[field.name] : ''"ng-style="field.styles">
+					</div>
+					<div class="suffix" ng-class="{'no-wrap': field.dontWrapSuffix}" ng-if="!!field.suffix">{{field.suffix}}</div>
+				</div>
+			</td>
+			<td class="action edit icon" colspan="{{isAnyRowEditing ? '2' : ''}}" ng-style="{'text-align': isAnyRowEditing ? 'right' : ''}" ng-if="!row.isEditing">
+				<button
+					ng-click="editRow(row)"
+					class="material-icon"
+					tabindex="{{isAnyRowEditing && !row.isEditing ? -1 : 0}}">
+						edit
+				</button>
+			</td>
+			<td class="action icon" ng-if="row.isEditing && !row.isFormEdit">
+				<button
+					ng-click="confirmCommitEditing(row,$event)"
+					ng-class="{'disabled':!row.isValid}"
+					class="material-icon"
+					tabindex="{{ row.isValid && row.isEditing && !row.hasPopup ? '0' : '-1' }}">
+						done
+				</button>
+			</td>
+			<td class="action icon" ng-if="row.isEditing && !row.isNotCancellable">
+				<button
+					ng-click="confirmCancelEditing(row,$event)"
+					class="material-icon"
+					tabindex="{{ row.hasPopup ? '-1' : '0' }}">
+						close
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

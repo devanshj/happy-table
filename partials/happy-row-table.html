@@ -1,0 +1,337 @@
+<div class="ui top attached menu happy-style selected-menu" ng-if="!settings.isForm" ng-class="{'shown': selectedRow}">
+	<div class="left menu">
+		<div class="item borderless header">Selected {{settings.rowNomenclature}}:</div>
+	</div>
+	<div class="right menu">
+		<a ng-click="editRow(selectedRow);" class="add-row item mobile-icon-only icon" tabindex="0" role="button">
+			<i class="material-icon">edit</i>
+		</a>
+		<a ng-click="confirmDelete(selectedRow,$event)" class="add-row item mobile-icon-only icon" tabindex="0" role="button">
+			<i class="material-icon">delete</i>
+		</a>
+	</div>
+</div>
+<div class="ui top attached menu happy-style" ng-if="!settings.isForm">
+	<div class="left menu">
+		<div class="ui item" ng-if="settings.tableName">
+			<b>{{settings.tableName}}</b>
+		</div>
+		<a ng-click="newRow()" ng-if="!isAnyRowEditing && happySortable.disabled && !settings.disableInsert" class="add-row item icon mobile-icon-only" tabindex="0" role="button">
+			<i class="material-icon">add</i><span>
+				Add 
+				<span ng-if="settings.tableVariation !== 'multipleInput' && settings.tableVariation !== 'embeddedMultipleInput' && settings.tableVariation !== 'embedded'">
+					{{settings.rowNomenclature}}
+				</span>
+			</span>	
+		</a>
+	</div>
+	<div class="right menu">
+		<a ng-repeat="button in settings.buttons" ng-click="button.action()" ng-if="button.shown &&!isAnyRowEditing && happySortable.disabled" class="item" ng-class="{'icon':button.icon}" tabindex="0" role="button">
+			<i ng-if="button.icon" class="material-icon">{{button.icon}}</i> {{button.name}}
+		</a>
+		<a class="item" ng-click="permanentifySort($event)" ng-if="settings.reorderable && happyOrderField.name && !isAnyRowEditing && settings.tableVariation !== 'multipleInput' && settings.canPermenantifySort" tabindex="0" role="button">
+			Permanentify Order
+		</a>
+		<a class="item icon reorder-rows mobile-icon-only" ng-click="reorderRows()" ng-if="settings.reorderable && happySortable.disabled && !isAnyRowEditing && dataResults.length > 1" tabindex="0" role="button">
+			<i class="material-icon">swap_vert</i><span>Reorder</span>
+		</a>
+		<div class="item icon reordering-label" ng-if="!happySortable.disabled">
+			<i class="material-icon">swap_vert</i>
+			<span class="pc-only">Reordering :</span><span class="mobile-only"> :</span>
+		</div>
+		<a class="item mobile-icon-only" ng-click="confirmCommitReordering($event)" ng-if="!happySortable.disabled" tabindex="0" role="button" ng-class="{'icon':!settings.isReorderConfirmationCompact,'icon-only':settings.isReorderConfirmationCompact}">
+			<i class="material-icon">done</i> <span ng-if="!settings.isReorderConfirmationCompact">Done</span>
+		</a>
+		<a class="item mobile-icon-only" ng-click="confirmCancelReordering($event)" ng-if="!happySortable.disabled" tabindex="0" role="button" ng-class="{'icon':!settings.isReorderConfirmationCompact,'icon-only':settings.isReorderConfirmationCompact}">
+			<i class="material-icon">close</i> <span ng-if="!settings.isReorderConfirmationCompact">Cancel</span>
+		</a>
+		<div ng-hide="isAnyRowEditing || !happySortable.disabled || data.length == 0 || settings.tableVariation == 'multipleInput' || settings.tableVariation == 'embeddedMultipleInput' || settings.tableVariation == 'embedded' || settings.hideSearch" class="ui right aligned category search item">
+			<div class="ui transparent icon input">
+				<input ng-model="happySearch" class="prompt" type="text" placeholder="Search">
+				<i class="search icon"></i>
+			</div>
+		</div>
+	</div>
+</div>
+<table class="ui bottom attached table happy-table" ng-class="[settings.tableStyles,{'happy-multiple-input': settings.tableVariation == 'multipleInput' || settings.tableVariation == 'embeddedMultipleInput', 'happy-scrolling-table': settings.tableScrolling, 'happy-embedded': settings.tableVariation == 'embedded' || settings.tableVariation == 'embeddedMultipleInput', 'happy-has-embedded': settings.hasEmbedded,'reordering':!happySortable.disabled}]" ng-style="{'position': happySortable.disabled ? '' : 'relative'}" table-scrolling-watcher selected-row-toggler>
+	<thead ng-if="settings.tableVariation !== 'multipleInput' && settings.tableVariation !== 'embeddedMultipleInput'">
+		<tr>
+			<th class="unsortable" ng-if="!happySortable.disabled"></th>
+			<th
+				ng-repeat="field in schema"
+				ng-click="!isAnyRowEditing && happySortable.disabled && !settings.unorderable && !settings.isForm && data.length !== 0 && setHappyOrderField(field)"
+				ng-class="{
+					'sorted-up': happyOrderField.name == field.name && !happyOrderReverse,
+					'sorted-down': happyOrderField.name == field.name && happyOrderReverse,
+					'disabled': isAnyRowEditing,
+					'unsortable': !happySortable.disabled || settings.unorderable || settings.isForm || data.length == 0
+				}"
+				ng-if="!field.hidden">
+					{{field.label}}
+			</th>
+			<th ng-if="settings.tableScrolling" class="scrolling-placeholder"></th>
+			<th class="unsortable" colspan="2" ng-if="happySortable.disabled && !settings.hideActions">Action</th>
+		</tr>
+	</thead>
+	<tbody ng-model="data" ui-sortable="happySortable">
+		<tr ng-repeat="row in data | orderBy : happyOrderField.name : happyOrderReverse | happySelectSorter : happyOrderField : happyOrderReverse | happyFilter : happySearch : schema as dataResults" ng-class="{'editing':row.isEditing, 'disabled':isAnyRowEditing && !row.isEditing, 'reordering':!happySortable.disabled,'firstEdit':row.isFormEdit,'selected': row.isSelected}" ng-click="toggleRowSelection(row)">
+			<td class="icon reorder" ng-if="!happySortable.disabled">
+				<i class="material-icon">reorder</i>
+			</td>
+			<td ng-repeat="field in schema | filter: {hidden:false}" ng-class="{'shrink':field.shrink || (field.type == 'table' && row.isEditing)}" ng-style="!row.isEditing ? field.viewCellStyles : {}">
+				<div class="default-value" ng-if="!row.isEditing && !field.isLink && field.type !== 'table'">
+					<span ng-if="row[field.name]">{{field.prefix}}</span>
+					<span>{{row[field.name] | happyFieldViewValue : field : row}}</span>
+				</div>
+				<div ng-if="!row.isEditing && field.type == 'table'">
+					<span ng-if="row[field.name]">{{field.prefix}}</span>
+					<div ng-bind-html="row[field.name] | happyFieldViewValue : field"></div>
+				</div>
+				<a href="{{row.href}}" class="default-value" ng-if="!row.isEditing && field.isLink">
+					<span ng-if="row[field.name]">{{field.prefix}}</span>
+					<span>{{row[field.name] | happyFieldViewValue : field}}</span>
+				</a>
+				<div class="editor" ng-if="row.isEditing" ng-class="{'error':row.hasError[field.name]}">
+					<div class="prefix" ng-if="!!field.prefix">{{field.prefix}}</div>
+					<div happy-popup="field.popup" class="readonly-value" ng-if="field.readonly">
+						{{row.editingValues[field.name] | happyFieldViewValue : field}}
+					</div>
+					<input
+						ng-if="field.element == 'input' && field.type !== 'date' && !field.readonly"
+						ng-model="row.editingValues[field.name]"
+						type="{{field.inputType}}"
+						min="{{field.min}}"
+						max="{{field.max}}"
+						ui-mask="{{field.mask.exp}}"
+						placeholder="{{field.emptyViewValue}}"
+						ui-mask-placeholder
+						ui-mask-placeholder-char="{{field.mask.placeholder}}"
+						is-focused="row.isFocused[field.name]"
+						select-all="row.isEditing && $first && !editingRow"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && row.isDirty[field.name] && (field.showErrorAfterTouched ? row.isTouched[field.name] : true),'happy-mobile-input':field.type == 'mobile'}"
+						tabindex="{{row.hasPopup || field.readonly ? -1 : 0}}"
+						happy-error-msg="row.isDirty[field.name] && !row.hasPopup && (field.showErrorAfterTouched ? row.isTouched[field.name] : true) ? row.errorMsg[field.name] : ''"
+						on-dirty="row.isDirty[field.name] = true"
+						on-touched="row.isTouched[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(row,$event)"
+						ng-style="field.styles"
+						fit-text-input="field.fitTextInput">
+					<div ng-if="field.type == 'checkbox'" class="checkbox"></div>
+
+
+					<!-- date -->
+					<input
+						ng-if="field.element == 'input' && field.type == 'date' && !field.readonly"
+						ui-date="field.datepickerOptions"
+						ng-model="row.editingValues[field.name]"
+						type="text"
+						is-focused="row.isFocused[field.name]"
+						select-all="row.isEditing && $first && !editingRow"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && (row.isDirty[field.name]) }"
+						tabindex="{{row.hasPopup ? -1 : 0}}"
+						happy-error-msg="row.isDirty[field.name] ? row.errorMsg[field.name] : ''"
+						on-dirty="row.isDirty[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(row,$event)"
+						ng-style="field.styles">
+			
+					<div
+						happy-select
+						ng-if="field.element == 'select' && !field.readonly"
+						ng-model="row.editingValues[field.name]"
+						options="field.tempOptions || field.options"
+						search-filter="field.filterBySearch"
+						is-table-scrolling="!formModalShown && (settings.tableScrolling || settings.getParentTable().tableScrolling)"
+						is-focused="row.isFocused[field.name]"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-class="{'error':row.hasError[field.name] && (row.isDirty[field.name]), 'disabled': field.disabled}"
+						tabindex="{{row.hasPopup ? -1 : 0}}"
+						happy-error-msg="row.isDirty[field.name] ? row.errorMsg[field.name] : ''"
+						on-dirty="row.isDirty[field.name] = true"
+						on-enter-keyup="!field.filterBySearch && confirmCommitEditing(row,$event)"
+						ng-style="_ngExtend(field.styles || {},{'white-space': field.fitTextInput ? 'nowrap' : ''})">
+					</div>
+
+					<div
+						ng-if="field.type == 'table'"
+						happy-table
+						ng-model="row.editingValues[field.name]"
+						settings="field.tableSettings"
+						is-focused="row.isFocused[field.name]"
+						ng-focus="field.tableSettings.focus()"
+						ng-blur="row.isFocused[field.name] = false;"
+						ng-style="field.styles">	
+					</div>
+	
+					<!--<div class="ui dropdown" ng-if="field.type == 'select'">
+						<input type="hidden" ng-model="row.editingValues[field.name]">
+						<i class="dropdown icon"></i>
+						<div class="default text">Type</div>
+						<div class="menu">
+							<div
+								ng-repeat="option in field.options"
+								data-value="{{option.value}}"
+								class="item">{{option.label}}</div>
+						</div>
+					</div>-->
+				</div>
+			</td>
+			<td ng-if="settings.tableScrolling" class="scrolling-placeholder"></td>
+			<td class="action icon" ng-if="!row.isEditing && happySortable.disabled && !settings.hideActions">
+				<button
+					ng-click="editRow(row)"
+					class="material-icon"
+					ng-class="{'disabled':isAnyRowEditing}"
+					tabindex="{{isAnyRowEditing && !row.isEditing ? -1 : 0}}">
+						edit
+				</button>
+			</td>
+			<td class="action icon" ng-if="!row.isEditing && happySortable.disabled && !settings.hideActions">
+				<button
+					class="material-icon"
+					ng-click="confirmDelete(row,$event)"
+					ng-class="{'disabled':row.isUndeletable || isAnyRowEditing}"
+					happy-popup="row.undeletablePopup"
+					tabindex="{{ (isAnyRowEditing && !row.isEditing) || row.isUndeletable ? -1 : 0}}">
+						delete
+				</button>
+			</td>
+			<td class="action icon done" ng-if="row.isEditing && happySortable.disabled && !settings.hideActions">
+				<button
+					ng-click="confirmCommitEditing(row,$event)"
+					ng-class="{'disabled':!row.isValid}"
+					class="material-icon commit-editing-button"
+					tabindex="{{ row.isValid && row.isEditing && !row.hasPopup ? '0' : '-1' }}">
+						done
+				</button>
+			</td>
+			<td class="action icon close" ng-if="row.isEditing && happySortable.disabled && !settings.hideActions">
+				<button
+					ng-click="confirmCancelEditing(row,$event)"
+					class="material-icon"
+					tabindex="{{ row.hasPopup ? '-1' : '0' }}">
+						close
+				</button>
+			</td>
+		</tr>	
+		<tr ng-if="!dataResults.length">
+			<td colspan="{{totalColumns}}" class="disabled">
+				<div class="ui very padded basic center aligned segment">
+					<h3><em>No {{settings.rowNomenclaturePlural}} found.</em></h3>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="scrolling-action-patch" ng-if="settings.tableScrolling"></div>
+<div class="happy-form-modal" ng-class="{'opened': formModalShown}">
+	<div class="modal-bar">
+		<div class="ui huge header breadcrumb">
+			{{editingRow.isNew ? 'Adding new ' : 'Editing'}} {{settings.rowNomenclature}}
+		</div>
+		<div class="actions">
+			<button
+				ng-click="confirmCancelEditing(editingRow,$event)"
+				class="icon close"
+				tabindex="{{ editingRow.hasPopup ? '-1' : '0' }}">
+					<i class="material-icon">close</i>
+			</button>
+			<button
+				ng-click="confirmCommitEditing(editingRow,$event)"
+				class="icon done"
+				tabindex="{{ editingRow.hasPopup ? '-1' : '0' }}">
+					<i class="material-icon">done</i>
+			</button>
+		</div>
+	</div>
+	<div class="content">
+		<div ng-if="!editingRow && formModalShown" class="ui active centered inline loader"></div>
+		<div class="ui form" ng-if="editingRow">
+			<div ng-repeat="field in schema | filter: {hidden:false}" ng-class="{'shrink':field.shrink || (field.type == 'table' && editingRow.isEditing),'error': editingRow.hasError[field.name]}" ng-style="!editingRow.isEditing ? field.viewCellStyles : {}" class="field">
+				<label>{{field.label}}</label>
+				<div class="default-value" ng-if="!editingRow.isEditing && !field.isLink && field.type !== 'table'">
+					<span ng-if="editingRow[field.name]">{{field.prefix}}</span>
+					<span>{{editingRow[field.name] | happyFieldViewValue : field : editingRow}}</span>
+				</div>
+				<div ng-if="!editingRow.isEditing && field.type == 'table'">
+					<span ng-if="editingRow[field.name]">{{field.prefix}}</span>
+					<div ng-bind-html="editingRow[field.name] | happyFieldViewValue : field"></div>
+				</div>
+				<a href="{{editingRow.href}}" class="default-value" ng-if="!editingRow.isEditing && field.isLink">
+					<span ng-if="editingRow[field.name]">{{field.prefix}}</span>
+					<span>{{editingRow[field.name] | happyFieldViewValue : field}}</span>
+				</a>
+				<div class="editor" ng-if="editingRow.isEditing" ng-class="{'error': editingRow.hasError[field.name] && editingRow.isDirty[field.name] && (field.showErrorAfterTouched ? editingRow.isTouched[field.name] : true),'ui left labeled input':  field.prefix}">
+					<div class="ui basic label prefix" ng-if="field.prefix">{{field.prefix}}</div>
+					<div happy-popup="field.popup" class="readonly-value" ng-if="field.readonly">
+						{{editingRow.editingValues[field.name] | happyFieldViewValue : field}}
+					</div>
+					<input
+						ng-if="field.element == 'input' && field.type !== 'date' && !field.readonly"
+						ng-model="editingRow.editingValues[field.name]"
+						type="{{field.inputType}}"
+						min="{{field.min}}"
+						max="{{field.max}}"
+						ui-mask="{{field.mask.exp}}"
+						placeholder="{{field.emptyViewValue}}"
+						ui-mask-placeholder
+						ui-mask-placeholder-char="{{field.mask.placeholder}}"
+						is-focused="editingRow.isFocused[field.name]"
+						ng-blur="editingRow.isFocused[field.name] = false;"
+						ng-class="{'error':editingRow.hasError[field.name] && editingRow.isDirty[field.name] && (field.showErrorAfterTouched ? editingRow.isTouched[field.name] : true),'happy-mobile-input':field.type == 'mobile'}"
+						tabindex="{{editingRow.hasPopup || field.readonly ? -1 : 0}}"
+						happy-error-msg="editingRow.isDirty[field.name] && !editingRow.hasPopup && (field.showErrorAfterTouched ? editingRow.isTouched[field.name] : true) ? editingRow.errorMsg[field.name] : ''"
+						on-dirty="editingRow.isDirty[field.name] = true"
+						on-touched="editingRow.isTouched[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(editingRow,$event)"
+						ng-style="field.styles">
+					<div ng-if="field.type == 'checkbox'" class="checkbox"></div>
+
+
+					<input
+						ng-if="field.element == 'input' && field.type == 'date' && !field.readonly"
+						ui-date="field.datepickerOptions"
+						ng-model="editingRow.editingValues[field.name]"
+						type="text"
+						is-focused="editingRow.isFocused[field.name]"
+						ng-blur="editingRow.isFocused[field.name] = false;"
+						ng-class="{'error':editingRow.hasError[field.name] && (editingRow.isDirty[field.name]) }"
+						tabindex="{{editingRow.hasPopup ? -1 : 0}}"
+						happy-error-msg="editingRow.isDirty[field.name] ? editingRow.errorMsg[field.name] : ''"
+						on-dirty="editingRow.isDirty[field.name] = true"
+						on-enter-keyup="confirmCommitEditing(editingRow,$event)"
+						ng-style="field.styles">
+			
+					<div
+						happy-select
+						ng-if="field.element == 'select' && !field.readonly"
+						ng-model="editingRow.editingValues[field.name]"
+						options="field.tempOptions || field.options"
+						search-filter="field.filterBySearch"
+						is-focused="editingRow.isFocused[field.name]"
+						ng-blur="editingRow.isFocused[field.name] = false;"
+						ng-class="{'error':editingRow.hasError[field.name] && (editingRow.isDirty[field.name]), 'disabled': field.disabled}"
+						tabindex="{{editingRow.hasPopup ? -1 : 0}}"
+						happy-error-msg="editingRow.isDirty[field.name] ? editingRow.errorMsg[field.name] : ''"
+						on-dirty="editingRow.isDirty[field.name] = true"
+						on-enter-keyup="!field.filterBySearch && confirmCommitEditing(editingRow,$event)"
+						ng-style="field.styles"
+						class="fluid">
+					</div>
+
+					<div
+						ng-if="field.type == 'table'"
+						happy-table
+						ng-model="editingRow.editingValues[field.name]"
+						settings="field.tableSettings"
+						is-focused="editingRow.isFocused[field.name]"
+						ng-focus="field.tableSettings.focus()"
+						ng-blur="editingRow.isFocused[field.name] = false;"
+						ng-style="field.styles">	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
